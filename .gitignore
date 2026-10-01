@@ -56,11 +56,15 @@ dagster-data/
 # Environment variables
 .env
 .env.local
+.env.*
 
 # Podman/Docker volumes
 victoriametrics-data/
 victoriametrics-data-dagster/
 victoriametrics-data-prefect/
+
+# Ansible Vault password file
+*.vault_pass
 
 # Temporary files
 *.tmp

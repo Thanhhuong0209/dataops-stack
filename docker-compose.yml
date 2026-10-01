@@ -1,24 +1,10 @@
-version: '3.8'  # (optional) Compose v2+ không cần version, có thể xóa nếu muốn
+version: '3.8'
 
 services:
-  # Dagster User Code (Chứa logic pipeline của bạn)
-  user_code:
-    build: .
-    image: thanhhuong29/dagster-user-code:latest
-    container_name: dagster-user-code
-    restart: always
-    environment:
-      - VICTORIAMETRICS_URL=http://victoriametrics:8428
-    ports:
-      - "3030:3030"
-    volumes:
-      - ./data:/app/data
-
-  # VictoriaMetrics (Để lưu trữ time-series data)
   victoriametrics:
     image: victoriametrics/victoria-metrics:latest
     container_name: victoriametrics
-    restart: always
+    restart: unless-stopped
     ports:
       - "8428:8428"
       - "2003:2003"
@@ -28,6 +14,43 @@ services:
     command:
       - "-storageDataPath=/storage"
       - "-retentionPeriod=1y"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8428/health || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  user_code:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${IMAGE_NAME:-thanhhuong29/dagster-user-code}:${IMAGE_TAG:-latest}
+    container_name: dagster-user-code
+    restart: unless-stopped
+    depends_on:
+      victoriametrics:
+        condition: service_healthy
+    environment:
+      VICTORIAMETRICS_URL: ${VICTORIAMETRICS_URL:-http://victoriametrics:8428}
+      DAGSTER_HOME: /opt/dagster/dagster_home
+      APP_PORT: ${APP_PORT:-3030}
+    ports:
+      - "${APP_PORT:-3030}:3030"
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(5); s.connect(('127.0.0.1', int(__import__('os').environ.get('APP_PORT', '3030')))); s.close()"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  rollback-helper:
+    image: alpine:3.20
+    container_name: rollback-helper
+    restart: "no"
+    command: ["sh", "-c", "echo rollback metadata ready"]
 
 volumes:
   vmdata:

@@ -1,29 +1,24 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
-# Thiết lập biến môi trường
-ENV PYTHONUNBUFFERED=1 \
-    DAGSTER_HOME=/opt/dagster/dagster_home
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DAGSTER_HOME=/opt/dagster/dagster_home \
+    VICTORIAMETRICS_URL=http://victoriametrics:8428 \
+    APP_PORT=3030
 
-# Tạo thư mục ứng dụng
 WORKDIR /app
 
-# Copy các file cần thiết
-COPY requirements.txt .
-COPY dagster_pipeline.py .
-COPY generate_timeseries.py .
-
-# Tạo thư mục data (để chứa file parquet nếu có) và tạo file __init__.py cho folder code
-RUN mkdir -p data && touch data/__init__.py
-
-# Cài đặt các thư viện Python
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Tạo thư mục Dagster home
-RUN mkdir -p $DAGSTER_HOME
+COPY dagster_pipeline.py ./
+COPY vm_ingestion_test.py ./
 
-# Expose port cho gRPC server (nếu dùng) hoặc webserver
+RUN mkdir -p data "$DAGSTER_HOME" && touch data/__init__.py
+
 EXPOSE 3030
 
-# Command mặc định để chạy code user-deployment (gRPC server)
-# Dagster Daemon/Webserver sẽ kết nối tới đây để lấy định nghĩa code
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=5 \
+  CMD python -c "import socket; s=socket.socket(); s.settimeout(5); s.connect(('127.0.0.1', int(__import__('os').environ.get('APP_PORT', '3030')))); s.close()" || exit 1
+
 CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "3030", "-f", "dagster_pipeline.py"]

@@ -1,0 +1,5 @@
+---
+docker_edition: ce
+docker_package: docker-ce
+docker_service_name: docker
+docker_users: []

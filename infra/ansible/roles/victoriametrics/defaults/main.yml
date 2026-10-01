@@ -1,0 +1,4 @@
+---
+victoriametrics_version: "latest"
+victoriametrics_port: 8428
+victoriametrics_data_dir: "/var/lib/victoriametrics"

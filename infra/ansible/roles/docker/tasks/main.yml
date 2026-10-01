@@ -1,0 +1,16 @@
+---
+- name: Ensure Docker repository dependencies are installed
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+    update_cache: true
+
+- name: Ensure Docker service is enabled and running
+  service:
+    name: "{{ docker_service_name }}"
+    state: started
+    enabled: true

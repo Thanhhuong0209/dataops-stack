@@ -1,0 +1,6 @@
+---
+galaxy_info:
+  author: DevOps Portfolio
+  description: Base system setup for the platform
+  license: MIT
+  min_ansible_version: 2.15

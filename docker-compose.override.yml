@@ -1,0 +1,8 @@
+services:
+  victoriametrics:
+    ports:
+      - "8428:8428"
+
+  user_code:
+    environment:
+      VICTORIAMETRICS_URL: http://host.containers.internal:8428

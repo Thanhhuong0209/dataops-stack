@@ -1,0 +1,10 @@
+---
+- name: Ensure Dagster home directory exists
+  file:
+    path: "{{ dagster_home }}"
+    state: directory
+    mode: "0755"
+
+- name: Show Dagster deployment target
+  debug:
+    msg: "Dagster will run the data pipeline and materialize metrics to VictoriaMetrics."

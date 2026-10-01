@@ -1,0 +1,4 @@
+---
+traefik_version: "v3.4.1"
+traefik_config_dir: "/etc/traefik"
+traefik_dashboard_port: 8080

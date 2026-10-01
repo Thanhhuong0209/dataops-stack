@@ -1,0 +1,18 @@
+---
+app_name: dagster-platform
+env: dev
+common_packages:
+  - curl
+  - git
+  - unzip
+  - ca-certificates
+  - python3
+  - python3-pip
+  - docker.io
+
+docker_service_name: docker
+
+traefik_domain: example.local
+jenkins_port: 8080
+victoriametrics_port: 8428
+dagster_port: 3000

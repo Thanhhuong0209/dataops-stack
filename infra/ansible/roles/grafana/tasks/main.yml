@@ -1,0 +1,10 @@
+---
+- name: Ensure Grafana data directory exists
+  file:
+    path: "{{ grafana_data_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Show Grafana configuration target
+  debug:
+    msg: "Grafana will be used to visualize the metrics collected by VictoriaMetrics and expose dashboards for the platform."

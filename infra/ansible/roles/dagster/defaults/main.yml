@@ -1,0 +1,4 @@
+---
+dagster_version: "1.12.0"
+dagster_port: 3000
+dagster_home: "/opt/dagster"

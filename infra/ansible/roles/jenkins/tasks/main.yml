@@ -1,0 +1,10 @@
+---
+- name: Ensure Jenkins home directory exists
+  file:
+    path: "{{ jenkins_home }}"
+    state: directory
+    mode: "0755"
+
+- name: Show Jenkins configuration target
+  debug:
+    msg: "Jenkins should be configured for GitHub integration, Docker build, and deployment automation."

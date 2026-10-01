@@ -1,0 +1,5 @@
+---
+jenkins_version: "lts"
+jenkins_home: "/var/lib/jenkins"
+jenkins_http_port: 8080
+jenkins_agent_port: 50000

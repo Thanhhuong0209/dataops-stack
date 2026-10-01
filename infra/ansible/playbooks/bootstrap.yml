@@ -1,0 +1,11 @@
+---
+- name: Bootstrap server
+  hosts: all
+  become: true
+  roles:
+    - common
+    - docker
+    - traefik
+    - jenkins
+    - victoriametrics
+    - dagster

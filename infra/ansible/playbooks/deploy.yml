@@ -1,0 +1,8 @@
+---
+- name: Deploy application stack
+  hosts: all
+  become: true
+  roles:
+    - common
+    - docker
+    - dagster

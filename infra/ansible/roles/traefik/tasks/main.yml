@@ -1,0 +1,27 @@
+---
+- name: Ensure Traefik configuration directory exists
+  file:
+    path: "{{ traefik_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Render Traefik static config file
+  copy:
+    dest: "{{ traefik_config_dir }}/traefik.yml"
+    content: |
+      entryPoints:
+        web:
+          address: ":80"
+        websecure:
+          address: ":443"
+      providers:
+        docker:
+          exposedByDefault: false
+      api:
+        dashboard: true
+        insecure: true
+    mode: "0644"
+
+- name: Show Traefik deployment target
+  debug:
+    msg: "Traefik is configured as the edge proxy for services behind the platform."

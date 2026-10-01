@@ -1,0 +1,10 @@
+---
+- name: Ensure VictoriaMetrics data directory exists
+  file:
+    path: "{{ victoriametrics_data_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Show VictoriaMetrics configuration target
+  debug:
+    msg: "VictoriaMetrics will store time-series telemetry for Dagster and application metrics."

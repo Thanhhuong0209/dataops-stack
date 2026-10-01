@@ -1,0 +1,10 @@
+---
+- name: Rollback deployment
+  hosts: all
+  become: true
+  tasks:
+    - name: Show rollback guidance
+      debug:
+        msg:
+          - "Rollback flow should restore previous image tag or previous Docker compose revision."
+          - "Use your release strategy and backup artifacts before redeploying."
